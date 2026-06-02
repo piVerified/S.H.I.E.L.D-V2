@@ -24,7 +24,7 @@ The new and improved SHIELD!
 
 | Wiring |
 | :-------: |
-|![CKT](https://github.com/piVerified/S.H.I.E.L.D-V2/blob/main/assets/top.png)|
+|![CKT](https://stasis.hackclub-assets.com/images/1777699006309-fa294r.png)|
 
 
 ---

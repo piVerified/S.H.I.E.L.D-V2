@@ -17,14 +17,14 @@ The new and improved SHIELD!
 
 | Top | Side |
 | :-: | :--: |
-| ![TOP]() | ![SIDE]()|
+| ![TOP](https://github.com/piVerified/S.H.I.E.L.D-V2/blob/main/assets/front.png) | ![SIDE](https://github.com/piVerified/S.H.I.E.L.D-V2/blob/main/assets/top.png)|
 
 ---
 ## Circuit Diagram
 
 | Wiring |
 | :-------: |
-|![CKT]()|
+|![CKT](https://github.com/piVerified/S.H.I.E.L.D-V2/blob/main/assets/top.png)|
 
 
 ---

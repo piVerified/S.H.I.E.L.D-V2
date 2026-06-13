@@ -1,0 +1,99 @@
+// Finalized Arduino code for a street lamp current leakage detection model.
+
+// --- Pin Definitions ---
+// The pin connected to the water sensor's signal wire.
+// Use an analog pin to read the varying voltage from the water.
+const int waterSensorPin = A0; 
+
+// The pin for the buzzer, which will sound an alert.
+const int buzzerPin = 8; 
+
+// The pin for the red LED, which will light up as an alert.
+const int redLedPin = 9; 
+
+// The pin for the "lamp," which is a single LED.
+// This LED will turn off when a leak is detected.
+// Remember to use a current-limiting resistor (e.g., 220Ω) for this LED.
+const int lampLedPin = 10; 
+
+// --- Constants ---
+// This threshold value determines when the Arduino considers the water "conductive."
+// You must calibrate this value for your specific setup.
+// A higher value indicates higher conductivity (less resistance).
+// Start with a value around 300 and adjust as needed.
+const int conductivityThreshold = 300; 
+
+// --- Sensor Optimization Constants ---
+// Number of readings to average. Increasing this value reduces sensitivity to
+// minor fluctuations and electrical noise, providing a more stable reading.
+const int READINGS_TO_AVERAGE = 20;
+
+// Interval in milliseconds to perform a new sensor reading cycle.
+const long readingInterval = 1000;
+
+// --- Variables ---
+long previousMillis = 0;
+
+// --- Setup Function ---
+// This runs once when the Arduino is powered on or reset.
+void setup() {
+  // Set all digital pins as outputs.
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(redLedPin, OUTPUT);
+  pinMode(lampLedPin, OUTPUT);
+  
+  // Initialize the Serial Monitor for debugging.
+  // This helps you see the sensor values in real-time.
+  Serial.begin(9600);
+  
+  // Initially, turn on the lamp LED to simulate normal operation.
+  digitalWrite(lampLedPin, HIGH);
+}
+
+// --- Main Loop ---
+// This runs continuously after the setup function is complete.
+void loop() {
+  // Use millis() for a non-blocking delay to check the sensor every second.
+  unsigned long currentMillis = millis();
+  
+  if (currentMillis - previousMillis >= readingInterval) {
+    previousMillis = currentMillis;
+
+    // Read the analog value from the water sensor multiple times to get a stable average.
+    long totalSensorValue = 0;
+    for (int i = 0; i < READINGS_TO_AVERAGE; i++) {
+      totalSensorValue += analogRead(waterSensorPin);
+      delay(5); // Small delay between readings
+    }
+    int sensorValue = totalSensorValue / READINGS_TO_AVERAGE;
+    
+    // Print the sensor value to the Serial Monitor for debugging.
+    Serial.print("Sensor Value: ");
+    Serial.println(sensorValue);
+    
+    // Check if the sensor value is above the defined threshold.
+    // This means the water is conductive, indicating a potential leak.
+    if (sensorValue > conductivityThreshold) {
+      // A leak is detected, so we activate the alert system.
+      Serial.println("Warning: High conductivity detected! System is now in alert mode.");
+      
+      // Turn off the lamp to simulate cutting power.
+      digitalWrite(lampLedPin, LOW);
+      
+      // Turn on the red LED and buzzer to signal the alert.
+      digitalWrite(redLedPin, HIGH);
+      digitalWrite(buzzerPin, HIGH);
+      
+    } else {
+      // No leak is detected, so the system operates normally.
+      Serial.println("Status: Normal operation. No conductivity issues found.");
+      
+      // Turn on the lamp.
+      digitalWrite(lampLedPin, HIGH);
+      
+      // Ensure the red LED and buzzer are off.
+      digitalWrite(redLedPin, LOW);
+      digitalWrite(buzzerPin, LOW);
+    }
+  }
+}
